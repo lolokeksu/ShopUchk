@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Заказ оформлен{% endblock %}
+{% block header %}✅ Заказ №{{ order_id }} оформлен!{% endblock %}
+
+{% block styles %}
+<style>
+    .order-info {
+        background: var(--card-bg);
+        border-radius: 20px;
+        padding: 20px;
+        margin: 20px 0;
+        box-shadow: 0 4px 12px var(--shadow);
+        text-align: center;
+    }
+    .order-info p {
+        color: var(--text-color);
+    }
+    .order-info strong {
+        color: var(--heading-color);
+        font-size: 1.2em;
+    }
+    .actions {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 30px;
+    }
+    .btn-outline {
+        background: transparent;
+        border: 1.5px solid var(--btn-outline-border);
+        color: var(--btn-outline-color);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="order-info">
+    <p>Спасибо за заказ! Мы свяжемся с вами в ближайшее время.</p>
+    <p>Сумма заказа: <strong>{{ total }} ₽</strong></p>
+</div>
+<div class="actions">
+    <a href="{{ url_for('catalog') }}" class="btn">Вернуться в каталог</a>
+    <a href="{{ url_for('user_profile_view') }}" class="btn btn-outline">Мои заказы</a>
+</div>
+{% endblock %}

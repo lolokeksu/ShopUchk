@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}Профиль{% endblock %}
+{% block header %}👤 Личный кабинет{% endblock %}
+
+{% block styles %}
+<style>
+    .info-card {
+        background: var(--card-bg);
+        border-radius: 20px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 12px var(--shadow);
+    }
+    .info-row {
+        display: flex;
+        margin-bottom: 10px;
+    }
+    .info-label {
+        width: 100px;
+        font-weight: 500;
+        color: var(--heading-color);
+    }
+    .edit-form {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid var(--border-light);
+    }
+    .edit-form input {
+        padding: 10px 14px;
+        border: 1.5px solid var(--border-light);
+        border-radius: 18px;
+        font-size: 15px;
+        width: 100%;
+        margin-bottom: 10px;
+        background: var(--card-bg);
+        color: var(--text-color);
+    }
+    .orders-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        background: var(--card-bg);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px var(--shadow);
+    }
+    .orders-table th, .orders-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid var(--border-light);
+    }
+    .orders-table th {
+        background: var(--total-bg);
+        color: var(--total-color);
+        font-weight: 600;
+    }
+    .status-badge {
+        background: var(--border-light);
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 13px;
+        color: var(--text-color);
+    }
+    .status-badge.done {
+        background: #2d6a4f;
+        color: white;
+    }
+    .status-badge.progress {
+        background: #e6a020;
+        color: black;
+    }
+    .nav-links a {
+        color: var(--link-color);
+        font-weight: 500;
+        margin-right: 20px;
+        text-decoration: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="nav-links">
+    <a href="{{ url_for('catalog') }}">← Вернуться в каталог</a>
+</div>
+
+<div class="info-card">
+    <div class="info-row">
+        <span class="info-label">📞 Телефон:</span>
+        <span>{{ user.phone }}</span>
+    </div>
+    <div class="info-row">
+        <span class="info-label">🏠 Адрес:</span>
+        <span>{{ user.address }}</span>
+    </div>
+    <div class="edit-form">
+        <form method="post" action="{{ url_for('user_profile_edit_view') }}">
+            <input type="text" name="address" value="{{ user.address }}" placeholder="Новый адрес доставки" required>
+            <button type="submit" class="btn">💾 Сохранить адрес</button>
+        </form>
+    </div>
+</div>
+
+<h3>📦 История заказов</h3>
+{% if orders %}
+<table class="orders-table">
+    <thead>
+        <tr>
+            <th>Дата</th>
+            <th>Состав</th>
+            <th>Сумма</th>
+            <th>Статус</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in orders %}
+        <tr>
+            <td>{{ order.created_at }}</td>
+            <td>
+                {% for item in order['items'] %}
+                    {{ item.name }} ({{ item.quantity }} кг)<br>
+                {% endfor %}
+            </td>
+            <td>{{ order.total }} ₽</td>
+            <td>
+                <span class="status-badge 
+                    {% if order.status == 'Выполнен' %}done
+                    {% elif order.status == 'В обработке' %}progress
+                    {% endif %}">
+                    {{ order.status }}
+                </span>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>У вас пока нет заказов.</p>
+{% endif %}
+{% endblock %}
